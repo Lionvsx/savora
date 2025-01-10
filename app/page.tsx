@@ -1,101 +1,96 @@
+"use client";
+
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { ArrowRight, Search, WandSparkles } from "lucide-react";
 import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <main className="h-dvh w-full flex flex-col justify-center items-center">
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+      <div className="w-fit h-fit relative flex flex-col justify-center items-center px-40 py-14">
+        <Image
+          src="/puzzle.png"
+          className="inline-flex absolute top-0 left-24"
+          width={75}
+          height={75}
+          alt={"puzzle illustration"}
+        />
+        <Image
+          src="/forkpurple.png"
+          className="inline-flex absolute top-16 left-0"
+          width={75}
+          height={75}
+          alt={"fork illustration"}
+        />
+        <Image
+          src="/egg.png"
+          className="inline-flex absolute top-48 left-20"
+          width={75}
+          height={75}
+          alt={"egg illustration"}
+        />
+
+        <Image
+          src="/forkcircle.png"
+          className="inline-flex absolute top-0 right-24"
+          width={75}
+          height={75}
+          alt={"fork circle illustration"}
+        />
+        <Image
+          src="/chef.png"
+          className="inline-flex absolute top-20 right-0"
+          width={75}
+          height={75}
+          alt={"fork circle illustration"}
+        />
+        <Image
+          src="/forkyellow.png"
+          className="inline-flex absolute top-40 right-24"
+          width={75}
+          height={75}
+          alt={"fork circle illustration"}
+        />
+        <h1 className="text-6xl font-medium text-center max-w-[935px] tracking-[-0.06em] leading-tight">
+          tell us about your
+          {' '}
+          <span className="bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">
+            perfect restaurant experience
+          </span>
+          {' '}
+          in
+          {' '}
+          <span className="text-gray-600">
+            Paris
+          </span>
+          {' '}
+          and we find it
+        </h1>
+        <div className="mt-8 w-full max-w-[740px] px-4 flex flex-col justify-center items-center">
+          <div className="relative w-full">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Input
+              type="text"
+              placeholder="Describe the experience you want to have..."
+              className={cn(
+                // base
+                "w-full h-14 pl-12 pr-16 text-lg rounded-xl bg-gray-100 shadow-none border-none focus:border-gray-500",
+              )}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            <button
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-600 hover:text-purple-900 transition-colors"
+            >
+              <WandSparkles className="w-5 h-5" />
+            </button>
+          </div>
+          <button className="mt-4 text-sm text-gray-500 hover:text-gray-800 transition-colors flex items-center group">
+            Curious how we scraped all the data for this project? Click here
+            <ArrowRight className="size-3.5 ml-1 group-hover:translate-x-1 transition-transform" />
+          </button>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </div>
+    </main >
   );
 }
