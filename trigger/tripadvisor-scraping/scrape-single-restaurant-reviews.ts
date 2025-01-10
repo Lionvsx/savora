@@ -111,11 +111,18 @@ export const scrapeSingleRestaurantReviews = task({
         throw new Error(String(extractionResult.error));
       }
 
-      redis.json.arrappend(
+      const [dbReviewsCount] = await redis.json.arrlen(
         restaurant.id,
-        "$.reviews",
-        ...extractionResult.output?.data.reviews
+        "$.reviews"
       );
+
+      if (dbReviewsCount && dbReviewsCount === 0) {
+        redis.json.arrappend(
+          restaurant.id,
+          "$.reviews",
+          ...extractionResult.output?.data.reviews
+        );
+      }
 
       if (extractionResult.output?.data) {
         const outputKey = `scraping-output:run:${ctx.run.id}`;
@@ -128,6 +135,10 @@ export const scrapeSingleRestaurantReviews = task({
           });
         }
       }
+
+      return {
+        reviews: extractionResult.output?.data.reviews,
+      };
     } catch (error) {
       throw error;
     } finally {
