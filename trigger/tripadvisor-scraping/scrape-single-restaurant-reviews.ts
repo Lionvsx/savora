@@ -2,9 +2,10 @@ import { cleanupHtml } from "@/functions/ai-scraping/cleanup-html";
 import { createBrowserSession } from "@/functions/browser/create-session";
 import { Restaurant } from "@/types/restaurant";
 import { logger, task } from "@trigger.dev/sdk/v3";
-import { chromium } from "playwright-extra";
+import puppeteer from "puppeteer";
 import { extractionJob } from "../ai-scraping/extract-data-html";
 import { redis } from "@/lib/redis";
+import { checkForBlocking } from "@/functions/ai-scraping/check-capcha";
 
 export interface ScrapeSingleRestaurantReviewsPayload {
   restaurant: Restaurant;
@@ -32,19 +33,38 @@ export const scrapeSingleRestaurantReviews = task({
       },
     });
 
-    const browser = await chromium.connectOverCDP(session.connectUrl);
-    const page = await browser.newPage();
+    const browser = await puppeteer.connect({
+      browserWSEndpoint: session.connectUrl,
+    });
 
     try {
+      const page = await browser.newPage();
+
       logger.info(`Navigating to Google search URL: ${searchUrl}`);
+      // Prevent all assets from loading, images, stylesheets etc
+      await page.setRequestInterception(true);
+      page.on("request", (request) => {
+        if (
+          ["script", "stylesheet", "image", "media", "font"].includes(
+            request.resourceType()
+          )
+        ) {
+          request.abort();
+        } else {
+          request.continue();
+        }
+      });
+
       await page.goto(searchUrl, {
         timeout: 60000,
         waitUntil: "domcontentloaded",
       });
 
       // Find first TripAdvisor result
-      const tripadvisorLink = page.locator('a[href*="tripadvisor.fr"]').first();
-      const restaurantUrl = await tripadvisorLink.getAttribute("href");
+      const tripadvisorLink = await page.$('a[href*="tripadvisor.fr"]');
+      const restaurantUrl = await tripadvisorLink?.evaluate((el) =>
+        el.getAttribute("href")
+      );
 
       logger.info(`Found TripAdvisor URL: ${restaurantUrl}`);
 
@@ -57,6 +77,14 @@ export const scrapeSingleRestaurantReviews = task({
         timeout: 120000,
         waitUntil: "domcontentloaded",
       });
+
+      const blockCheck = await checkForBlocking(page);
+
+      if (blockCheck.isBlocked) {
+        throw new Error(
+          `Page access blocked: ${blockCheck.type} - ${blockCheck.message}`
+        );
+      }
 
       const pageContent = await page.content();
       await browser.close();
@@ -84,9 +112,9 @@ export const scrapeSingleRestaurantReviews = task({
       }
 
       redis.json.arrappend(
-        `restaurant:${restaurant.id}`,
+        restaurant.id,
         "$.reviews",
-        extractionResult.output?.data.reviews
+        ...extractionResult.output?.data.reviews
       );
 
       if (extractionResult.output?.data) {
