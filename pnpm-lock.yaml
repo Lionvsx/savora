@@ -27,6 +27,9 @@ importers:
       '@radix-ui/react-slot':
         specifier: ^1.1.1
         version: 1.1.1(@types/react@19.0.1)(react@19.0.0)
+      '@trigger.dev/react-hooks':
+        specifier: ^3.3.9
+        version: 3.3.9(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@trigger.dev/sdk':
         specifier: 3.3.9
         version: 3.3.9(zod@3.24.1)
@@ -687,6 +690,13 @@ packages:
   '@trigger.dev/core@3.3.9':
     resolution: {integrity: sha512-EjVkywvVlVQZU3dxBvSrN0WezgkUmhr7zzXsO1i1CtxouPG3U0/BHi2jXm0UAAMjvb/ZpbkLrOoe9bjlr3yiDQ==}
     engines: {node: '>=18.20.0'}
+
+  '@trigger.dev/react-hooks@3.3.9':
+    resolution: {integrity: sha512-Vs7ZRyyWWl62gbNMfXMIJYcL3WLlXU6ox72o7zHlpXX9mrCi3JkSFgDIzKw8IRL4zAVIvB4FYUycwyppKbTABg==}
+    engines: {node: '>=18.20.0'}
+    peerDependencies:
+      react: ^18.0 || ^19.0 || ^19.0.0-rc
+      react-dom: ^18.0 || ^19.0 || ^19.0.0-rc
 
   '@trigger.dev/sdk@3.3.9':
     resolution: {integrity: sha512-Ady71pQPuv6wTb50iGedqCeWBID5rMAgC8XK4MnyDCUKBHo+e1hqsZtXXiUsbXf54nEqyVfRpo6jIrtJ2xhoGA==}
@@ -3664,6 +3674,17 @@ snapshots:
       zod: 3.23.8
       zod-error: 1.5.0
       zod-validation-error: 1.5.0(zod@3.23.8)
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
+
+  '@trigger.dev/react-hooks@3.3.9(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
+    dependencies:
+      '@trigger.dev/core': 3.3.9
+      react: 19.0.0
+      react-dom: 19.0.0(react@19.0.0)
+      swr: 2.3.0(react@19.0.0)
     transitivePeerDependencies:
       - bufferutil
       - supports-color
