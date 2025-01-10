@@ -130,7 +130,24 @@ export async function chooseInstructionsWithAI({
 You are an AI that helps choose the best scraping pattern for a webpage.
 You must ONLY return a pattern index if there is an EXACT match between the target pattern and an existing pattern.
 Compare the target pattern with existing patterns character by character.
-Return -1 unless you find a 100% exact string match (case sensitive).
+Return -1 unless you find a 100% exact string match (case sensitive) on the props.
+
+For example, these should be considered identical:
+Pattern A:
+reviews[] = {
+  title: string,
+  rating: number,
+  text: string
+}
+
+Pattern B:
+reviews[]{
+title:string,
+rating:number,
+text:string}
+
+Compare the normalized versions character by character.
+
 Only return the index number (0-based) of the exact matching pattern, or -1 if none match perfectly.
 No explanation needed, just the number.`;
 
@@ -144,7 +161,12 @@ ${url}
 Existing instructions with their patterns:
 ${results
   .slice(0, 15)
-  .map((r, i) => `${i}. Pattern: "${r.pattern}"`)
+  .map(
+    (r, i) =>
+      `${i}. Pattern: "${r.pattern}", Description: "${
+        r.description || "No description"
+      }"`
+  )
   .join("\n")}
 
 Which pattern EXACTLY matches the target pattern? Return -1 unless there's a perfect match.`;
@@ -187,4 +209,24 @@ export async function getCachedHTML(url: string): Promise<string | null> {
   const cacheKey = `html:${url}`;
   const html = await redis.get<string>(cacheKey);
   return html;
+}
+
+export async function deleteInstructions({
+  url,
+  instructionsId,
+}: {
+  url: string;
+  instructionsId?: string;
+}) {
+  if (!instructionsId || !url) {
+    return;
+  }
+  const existingInstructions = await redis.hgetall(instructionsId);
+  if (!existingInstructions) {
+    return;
+  }
+  const domain = new URL(url).hostname.replace("www.", "");
+
+  await redis.srem(`domain:${domain}`, instructionsId);
+  await redis.del(instructionsId);
 }

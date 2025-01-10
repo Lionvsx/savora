@@ -23,6 +23,7 @@ export async function createBrowserSession({
     browserSettings: {
       solveCaptchas: true,
     },
+    region: "eu-central-1",
     proxies: [
       {
         type: "browserbase",

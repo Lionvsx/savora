@@ -1,8 +1,12 @@
 import { AIScraper } from "@/services/ai-scraper";
 import { DatabaseInstruction } from "@/types/ai-scraping";
 import { logger, retry } from "@trigger.dev/sdk/v3";
-import { executeValidationStep } from "../../trigger/ai-scraping/execute-validation-step";
-import { cacheHTML, updateInstructions } from "./instructions/database";
+import { executeValidationStep } from "./execute-validation-step";
+import {
+  cacheHTML,
+  deleteInstructions,
+  updateInstructions,
+} from "./instructions/database";
 
 const DEFAULT_MAX_ATTEMPTS = 5;
 
@@ -72,6 +76,10 @@ export async function extractDataFromHtml(payload: ExtractDataFromHtmlPayload) {
   );
 
   if (!success) {
+    await deleteInstructions({
+      url,
+      instructionsId: lastSavedInstructions?.id,
+    });
     throw new Error(
       `Failed to extract data from HTML after ${maxAIScraperAttempts} attempts`
     );

@@ -1,5 +1,4 @@
-import { Page } from "playwright-core";
-
+import { Page } from "puppeteer";
 export async function simulateHumanScrolling(page: Page) {
   // Get page height
   const pageHeight = await page.evaluate(
@@ -20,7 +19,9 @@ export async function simulateHumanScrolling(page: Page) {
     }, currentPosition);
 
     // Random pause between 500-1500ms
-    await page.waitForTimeout(Math.floor(Math.random() * 1000) + 500);
+    await new Promise((resolve) =>
+      setTimeout(resolve, Math.floor(Math.random() * 1000) + 500)
+    );
 
     // Occasionally move mouse randomly
     if (Math.random() > 0.7) {
@@ -34,5 +35,5 @@ export async function simulateHumanScrolling(page: Page) {
   await page.evaluate(() =>
     window.scrollTo(0, document.documentElement.scrollHeight)
   );
-  await page.waitForTimeout(1000);
+  await new Promise((resolve) => setTimeout(resolve, 1000));
 }

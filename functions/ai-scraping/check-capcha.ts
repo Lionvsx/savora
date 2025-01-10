@@ -1,5 +1,5 @@
 import { logger } from "@trigger.dev/sdk/v3";
-import { Page } from "playwright-core";
+import { Page } from "puppeteer";
 
 interface BlockCheckResult {
   isBlocked: boolean;

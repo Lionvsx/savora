@@ -5,6 +5,9 @@ import { extractionJob } from "./ai-scraping/extract-data-html";
 interface ScrapeUrlPayload {
   url: string;
   pattern: string;
+  options?: {
+    maxAIScraperAttempts?: number;
+  };
 }
 
 export const scrapeUrl = task({

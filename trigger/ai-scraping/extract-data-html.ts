@@ -16,6 +16,9 @@ export const extractionJob = task({
   retry: {
     maxAttempts: 0,
   },
+  queue: {
+    concurrencyLimit: 10,
+  },
   run: async (payload: ExtractDataHtmlPayload) => {
     const { html, url, pattern, maxAIScraperAttempts } = payload;
     const chooseInstructionsResult = await chooseInstructions.triggerAndWait({
