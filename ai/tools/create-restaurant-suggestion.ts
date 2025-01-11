@@ -5,6 +5,11 @@ export const restaurantSuggestionTool = createTool({
   description:
     "Create a personalized restaurant suggestion UI card based on index results",
   parameters: z.object({
+    featured: z
+      .boolean()
+      .describe(
+        "Wether your want to highlight this restaurant in the UI. Only one restaurant should be featured."
+      ),
     name: z.string().describe("The name of the restaurant"),
     cuisine: z.string().describe("The cuisine of the restaurant"),
     rating: z.number().describe("The rating of the restaurant"),
@@ -16,11 +21,6 @@ export const restaurantSuggestionTool = createTool({
       .string()
       .describe(
         "Describe why do you think this restaurant is a good suggestion for the user"
-      ),
-    featured: z
-      .boolean()
-      .describe(
-        "Wether your want to highlight this restaurant in the UI. Only one restaurant should be featured."
       ),
   }),
 });

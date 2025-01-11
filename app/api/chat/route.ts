@@ -2,7 +2,7 @@ import { restaurantSuggestionTool } from "@/ai/tools/create-restaurant-suggestio
 import { generateEmbedding } from "@/lib/utils/embeddings";
 import { index } from "@/lib/vector";
 import { VectorMetadata } from "@/types/vector";
-import { groq } from "@ai-sdk/groq";
+import { anthropic } from "@ai-sdk/anthropic";
 import { createDataStreamResponse, streamText } from "ai";
 
 // Allow streaming responses up to 30 seconds
@@ -37,7 +37,7 @@ export async function POST(req: Request) {
       });
 
       const result = streamText({
-        model: groq("llama-3.3-70b-versatile"),
+        model: anthropic("claude-3-5-haiku-latest"),
         system: `You are a helpful restaurant recommendation assistant powered by real-time restaurant data. Your primary role is to analyze and use the provided restaurant data (RAG) to make informed suggestions.
 
 IMPORTANT: You must ALWAYS:
@@ -59,8 +59,6 @@ SUGGESTION REQUIREMENTS:
   * Multiple appearances in results (if applicable)
 
 When responding:
-- If the provided restaurants don't match the user's needs, explicitly state this
-- If the user's request is unclear, ask for clarification about cuisine, price range, or occasion
 - Keep suggestions focused on the actual restaurants in the RAG data
 - Format each suggestion using the suggestRestaurant tool for consistent UI presentation
 - Always answer in the same language as the user's query
@@ -80,10 +78,13 @@ Remember: Your recommendations must be grounded in the real restaurant data prov
             content: userQuery,
           },
         ],
+        toolChoice: "required",
+        experimental_toolCallStreaming: true,
         tools: {
           suggestRestaurant: restaurantSuggestionTool,
         },
         maxSteps: 6,
+        maxRetries: 3,
       });
 
       result.mergeIntoDataStream(dataStream);

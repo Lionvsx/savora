@@ -5,18 +5,32 @@ import StaggeredFadeLoader from "@/components/ui/staggered-fade-loader";
 import { cn } from "@/lib/utils";
 import { generateId } from "ai";
 import { useChat } from "ai/react";
-import { ArrowRight, CircleDollarSign, MapPin, Search, Star, User, UtensilsCrossed, WandSparkles } from "lucide-react";
+import { ArrowRight, CircleDollarSign, MapPin, Search, Star, User, UtensilsCrossed, WandSparkles, X, AlertCircle } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
+import Link from "next/link";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function Home() {
-  const { input, handleInputChange, handleSubmit, messages, setMessages, isLoading } = useChat();
+  const { input, handleInputChange, handleSubmit, messages, setMessages, isLoading, setInput, error } = useChat();
 
   const handleSubmitMessage = (event: React.FormEvent<HTMLFormElement>) => {
     if (messages.length > 1 && input.length > 0) {
       setMessages([{ role: "user", content: input, id: generateId() }]);
     }
     handleSubmit(event);
+  }
+
+  console.log(messages);
+
+  const handleReset = () => {
+    setMessages([]);
+    setInput("");
   }
 
   return (
@@ -123,10 +137,10 @@ export default function Home() {
             </button>
           </form>
           {messages.length === 0 && (
-            <button className="mt-4 text-sm text-gray-500 hover:text-gray-800 transition-colors flex items-center group" type="submit" onClick={handleSubmit}>
+            <Link href='/test-scraping' className="mt-4 text-sm text-gray-500 hover:text-gray-800 transition-colors flex items-center group" type="submit" onClick={handleSubmit}>
               Curious on how we scraped all the data for this project? Click here
               <ArrowRight className="size-3.5 ml-1 group-hover:translate-x-1 transition-transform" />
-            </button>
+            </Link>
           )}
           {messages.filter(message => message.role === "user").slice(-1).map((message) => (
             <motion.div
@@ -136,15 +150,50 @@ export default function Home() {
               key={message.id}
               className="w-full mt-4 p-6 bg-gray-100 rounded-xl border border-dashed border-gray-300"
             >
-              <div className="flex items-start gap-3">
-                <User className="w-5 h-5 text-gray-400" />
-                <div>
-                  <div className="text-sm font-medium text-gray-400">Your Request</div>
-                  <p className="mt-1 text-gray-600 leading-relaxed text-sm font-mono">{message.content}</p>
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start gap-3">
+                  <User className="w-5 h-5 text-gray-400" />
+                  <div>
+                    <div className="text-sm font-medium text-gray-400">Your Request</div>
+                    <p className="mt-1 text-gray-600 leading-relaxed text-sm font-mono">{message.content}</p>
+                  </div>
                 </div>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        onClick={handleReset}
+                        className="p-1.5 hover:bg-gray-200 rounded-md transition-colors"
+                      >
+                        <X className="w-4 h-4 text-gray-400" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Reset the interface</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
             </motion.div>
           ))}
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2 }}
+              className="w-full mt-4 p-4 bg-red-50 rounded-xl border border-red-100"
+            >
+              <div className="flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-red-500 shrink-0" />
+                <div>
+                  <div className="text-sm font-medium text-red-600">Error</div>
+                  <p className="mt-1 text-red-600 text-sm">
+                    {error instanceof Error ? error.message : 'An unexpected error occurred'}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          )}
           {messages.filter(message => message.role === "assistant").map((message) => (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -156,7 +205,7 @@ export default function Home() {
               <div>{message.content}</div>
               {
                 message.toolInvocations?.map((tool) => {
-                  if (tool.toolName === "suggestRestaurant") {
+                  if (tool.toolName === "suggestRestaurant" && tool.args) {
                     const params = tool.args;
                     return (
                       <motion.div
@@ -180,33 +229,66 @@ export default function Home() {
                           </div>
                         )}
 
-                        <h3 className="text-2xl font-semibold text-gray-900">{params.name}</h3>
+                        <h3 className="text-2xl font-semibold text-gray-900">
+                          {params.name || (
+                            <div className="h-8 w-48 bg-gray-200 rounded-md animate-pulse" />
+                          )}
+                        </h3>
 
                         <div className="mt-3 flex items-center gap-4">
-                          <span className="text-gray-600 flex items-center gap-1">
-                            <UtensilsCrossed className="w-4 h-4" />
-                            {params.cuisine}
-                          </span>
+                          {params.cuisine ? (
+                            <span className="text-gray-600 flex items-center gap-1">
+                              <UtensilsCrossed className="w-4 h-4" />
+                              {params.cuisine}
+                            </span>
+                          ) : (
+                            <div className="h-5 w-24 bg-gray-200 rounded-md animate-pulse" />
+                          )}
                           <span className="text-gray-400">•</span>
-                          <span className="font-medium text-gray-900 flex items-center gap-1">
-                            <CircleDollarSign className="w-4 h-4" />
-                            {params.priceRange}
-                          </span>
+                          {params.priceRange ? (
+                            <span className="font-medium text-gray-900 flex items-center gap-1">
+                              <CircleDollarSign className="w-4 h-4" />
+                              {params.priceRange}
+                            </span>
+                          ) : (
+                            <div className="h-5 w-16 bg-gray-200 rounded-md animate-pulse" />
+                          )}
                           <span className="text-gray-400">•</span>
-                          <div className="flex items-center gap-1">
-                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                            <span className="font-medium">{params.rating}</span>
+                          {params.rating ? (
+                            <div className="flex items-center gap-1">
+                              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                              <span className="font-medium">{params.rating}</span>
+                            </div>
+                          ) : (
+                            <div className="h-5 w-12 bg-gray-200 rounded-md animate-pulse" />
+                          )}
+                        </div>
+
+                        {params.address ? (
+                          <div className="mt-4 flex items-start gap-2">
+                            <MapPin className="w-5 h-5 text-gray-500 mt-0.5" />
+                            <p className="text-gray-600 leading-snug">{params.address}</p>
                           </div>
-                        </div>
+                        ) : (
+                          <div className="mt-4 flex items-start gap-2">
+                            <MapPin className="w-5 h-5 text-gray-300" />
+                            <div className="h-5 w-64 bg-gray-200 rounded-md animate-pulse" />
+                          </div>
+                        )}
 
-                        <div className="mt-4 flex items-start gap-2">
-                          <MapPin className="w-5 h-5 text-gray-500 mt-0.5" />
-                          <p className="text-gray-600 leading-snug">{params.address}</p>
-                        </div>
-
-                        <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-                          <p className="text-gray-700 leading-relaxed">{params.reason}</p>
-                        </div>
+                        {params.reason ? (
+                          <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                            <p className="text-gray-700 leading-relaxed">{params.reason}</p>
+                          </div>
+                        ) : (
+                          <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                            <div className="space-y-2">
+                              <div className="h-4 w-full bg-gray-200 rounded-md animate-pulse" />
+                              <div className="h-4 w-5/6 bg-gray-200 rounded-md animate-pulse" />
+                              <div className="h-4 w-4/6 bg-gray-200 rounded-md animate-pulse" />
+                            </div>
+                          </div>
+                        )}
                       </motion.div>
                     );
                   }
