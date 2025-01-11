@@ -13,7 +13,7 @@ export default function Home() {
   const { input, handleInputChange, handleSubmit, messages, setMessages, isLoading } = useChat();
 
   const handleSubmitMessage = (event: React.FormEvent<HTMLFormElement>) => {
-    if (messages.length > 1) {
+    if (messages.length > 1 && input.length > 0) {
       setMessages([{ role: "user", content: input, id: generateId() }]);
     }
     handleSubmit(event);
