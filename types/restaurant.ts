@@ -15,3 +15,11 @@ export interface Restaurant extends Record<string, unknown> {
   latitude?: number;
   longitude?: number;
 }
+
+export type Review = {
+  title: string;
+  rating: number;
+  text: string;
+  author: string;
+  date: string;
+};
