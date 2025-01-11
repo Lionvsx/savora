@@ -14,8 +14,6 @@ export async function POST(req: Request) {
   // immediately start streaming (solves RAG issues with status, etc.)
   return createDataStreamResponse({
     execute: async (dataStream) => {
-      dataStream.writeData("starting rag...");
-
       const userQuery = messages[messages.length - 1].content;
 
       const queryEmbedding = await generateEmbedding(userQuery);
