@@ -37,31 +37,31 @@ export default function Home() {
     <motion.main
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-dvh w-full flex flex-col justify-center items-center py-36"
+      className="min-h-dvh w-full flex flex-col justify-center items-center py-36 px-0 sm:px-6"
     >
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="w-fit h-fit relative flex flex-col justify-center items-center px-40 py-14"
+        className="w-fit h-fit relative flex flex-col justify-center items-center px-2 sm:px-8 md:px-40 py-14"
       >
         <Image
           src="/puzzle.png"
-          className="inline-flex absolute top-0 left-24"
+          className="hidden md:inline-flex absolute top-0 left-24"
           width={75}
           height={75}
           alt={"puzzle illustration"}
         />
         <Image
           src="/forkpurple.png"
-          className="inline-flex absolute top-16 left-0"
+          className="hidden md:inline-flex absolute top-16 left-0"
           width={75}
           height={75}
           alt={"fork illustration"}
         />
         <Image
           src="/egg.png"
-          className="inline-flex absolute top-48 left-20"
+          className="hidden md:inline-flex absolute top-48 left-20"
           width={75}
           height={75}
           alt={"egg illustration"}
@@ -69,21 +69,21 @@ export default function Home() {
 
         <Image
           src="/forkcircle.png"
-          className="inline-flex absolute top-0 right-24"
+          className="hidden md:inline-flex absolute top-0 right-24"
           width={75}
           height={75}
           alt={"fork circle illustration"}
         />
         <Image
           src="/chef.png"
-          className="inline-flex absolute top-20 right-0"
+          className="hidden md:inline-flex absolute top-20 right-0"
           width={75}
           height={75}
           alt={"fork circle illustration"}
         />
         <Image
           src="/forkyellow.png"
-          className="inline-flex absolute top-40 right-24"
+          className="hidden md:inline-flex absolute top-40 right-24"
           width={75}
           height={75}
           alt={"fork circle illustration"}
@@ -92,7 +92,7 @@ export default function Home() {
           initial={{ opacity: 0, filter: "blur(10px)" }}
           animate={{ opacity: 1, filter: "blur(0px)" }}
           transition={{ duration: 0.4 }}
-          className="text-6xl font-medium text-center max-w-[935px] tracking-[-0.06em] leading-tight"
+          className="text-4xl sm:text-5xl md:text-6xl font-medium text-center max-w-[935px] tracking-[-0.06em] leading-tight"
         >
           tell us about your
           {' '}
@@ -112,7 +112,7 @@ export default function Home() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.2 }}
-          className="mt-8 w-full max-w-[740px] px-4 flex flex-col justify-center items-center"
+          className="mt-8 w-full max-w-[740px] px-2 sm:px-4 flex flex-col justify-center items-center"
         >
           <form className="relative w-full" onSubmit={handleSubmitMessage}>
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -137,7 +137,7 @@ export default function Home() {
             </button>
           </form>
           {messages.length === 0 && (
-            <Link href='/test-scraping' className="mt-4 text-sm text-gray-500 hover:text-gray-800 transition-colors flex items-center group" type="submit" onClick={handleSubmit}>
+            <Link href='/test-scraping' className="mt-4 text-sm text-gray-500 hover:text-gray-800 transition-colors flex items-center group">
               Curious on how we scraped all the data for this project? Click here
               <ArrowRight className="size-3.5 ml-1 group-hover:translate-x-1 transition-transform" />
             </Link>
@@ -148,7 +148,7 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.2 }}
               key={message.id}
-              className="w-full mt-4 p-6 bg-gray-100 rounded-xl border border-dashed border-gray-300"
+              className="w-full mt-4 p-3 sm:p-6 bg-gray-100 rounded-xl border border-dashed border-gray-300"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-start gap-3">
@@ -214,7 +214,7 @@ export default function Home() {
                         transition={{ duration: 0.3 }}
                         key={tool.toolCallId}
                         className={cn(
-                          "mt-4 p-6 bg-white rounded-xl shadow-sm border transition-all min-w-full",
+                          "mt-4 p-4 sm:p-6 bg-white rounded-xl shadow-sm border transition-all min-w-full",
                           params.featured
                             ? "border-purple-400 shadow-purple-100"
                             : "border-gray-200"
@@ -235,7 +235,7 @@ export default function Home() {
                           )}
                         </h3>
 
-                        <div className="mt-3 flex items-center gap-4">
+                        <div className="mt-3 flex flex-row sm:items-center gap-2 sm:gap-4">
                           {params.cuisine ? (
                             <span className="text-gray-600 flex items-center gap-1">
                               <UtensilsCrossed className="w-4 h-4" />
@@ -244,7 +244,7 @@ export default function Home() {
                           ) : (
                             <div className="h-5 w-24 bg-gray-200 rounded-md animate-pulse" />
                           )}
-                          <span className="text-gray-400">•</span>
+                          <span className="text-gray-400 hidden sm:block">•</span>
                           {params.priceRange ? (
                             <span className="font-medium text-gray-900 flex items-center gap-1">
                               <CircleDollarSign className="w-4 h-4" />
@@ -253,7 +253,7 @@ export default function Home() {
                           ) : (
                             <div className="h-5 w-16 bg-gray-200 rounded-md animate-pulse" />
                           )}
-                          <span className="text-gray-400">•</span>
+                          <span className="text-gray-400 hidden sm:block">•</span>
                           {params.rating ? (
                             <div className="flex items-center gap-1">
                               <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
