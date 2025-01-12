@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Savora - AI-Powered Restaurant Discovery
+
+Savora is an intelligent restaurant recommendation system that helps users discover the perfect dining experiences in Paris. It combines real-time web scraping, AI-powered analysis, and natural language processing to provide personalized restaurant suggestions.
+
+## Features
+
+- 🤖 **AI-Powered Recommendations**: Uses Claude 3.5 to analyze user requests and match them with restaurant data
+- 🌐 **Real-time Web Scraping**: Intelligent scraping system with automatic pattern generation
+- 🗺️ **Paris-Focused**: Specialized in Parisian restaurants with location-aware data collection
+- 💬 **Natural Language Interface**: Simply describe your ideal dining experience in plain language
+- 🎯 **Personalized Matching**: Considers cuisine, price range, location, and user preferences
+- ⚡ **Real-time Updates**: Fresh data through automated scraping and validation
+
+## Tech Stack
+
+- **Frontend**: Next.js 15.1, React 19, TailwindCSS
+- **AI/ML**: Claude 3.5 (Anthropic), OpenAI, Groq
+- **Scraping**: Puppeteer, Cheerio, BrowserBase
+- **Data Storage**: Upstash Redis, Vector Store
+- **Infrastructure**: Vercel, Trigger.dev
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository
+2. Install dependencies:
+3. Run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Project Structure
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- `/app`: Next.js application routes and pages
+- `/components`: Reusable React components
+- `/functions`: Core business logic and AI functions
+- `/services`: Service layer for scraping and data processing
+- `/trigger`: Background job definitions for Trigger.dev
+- `/lib`: Utility functions and shared code
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Key Components
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### AI Scraping System
 
-## Learn More
+The project features a sophisticated web scraping system that:
 
-To learn more about Next.js, take a look at the following resources:
+- Automatically generates scraping patterns using AI
+- Validates and cleans extracted data
+- Maintains data freshness through periodic updates
+- Handles pagination and complex page structures
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Restaurant Recommendation Engine
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Powered by Claude 3.5, the recommendation engine:
 
-## Deploy on Vercel
+- Analyzes natural language queries
+- Matches user preferences with restaurant data
+- Provides detailed explanations for recommendations
+- Includes specific quotes from customer reviews
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Contributing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details
+
+## Acknowledgments
+
+- Built with [Next.js](https://nextjs.org/)
+- AI powered by [Anthropic Claude](https://www.anthropic.com/)
+- Scraping infrastructure by [BrowserBase](https://browserbase.com/)
+- Background jobs by [Trigger.dev](https://trigger.dev/)
