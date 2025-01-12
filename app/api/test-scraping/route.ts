@@ -18,6 +18,9 @@ export async function POST(request: NextRequest) {
     const handler = await scrapeUrl.trigger({
       url,
       pattern,
+      options: {
+        stealth: true,
+      },
     });
 
     return NextResponse.json({

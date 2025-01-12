@@ -11,7 +11,7 @@ interface GetPageHtmlPayload {
   options?: {
     fast?: boolean;
     stealth?: boolean;
-    maxAIScraperAttempts?: number;
+    skipCache?: boolean;
   };
 }
 
@@ -27,7 +27,7 @@ export const getPageHtml = task({
   run: async ({ url, options }: GetPageHtmlPayload): Promise<string> => {
     const cachedHTML = await getCachedHTML(url);
 
-    if (cachedHTML) {
+    if (cachedHTML && !options?.skipCache) {
       metadata.root.append("logs", {
         type: "info",
         message: "Found cached HTML, skipping browser session",

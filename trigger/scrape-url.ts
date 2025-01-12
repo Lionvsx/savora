@@ -6,6 +6,7 @@ interface ScrapeUrlPayload {
   url: string;
   pattern: string;
   options?: {
+    stealth?: boolean;
     maxAIScraperAttempts?: number;
   };
 }
@@ -27,7 +28,12 @@ export const scrapeUrl = task({
       type: "info",
       message: `Scraping URL: ${url}`,
     });
-    const getHTMLResult = await getPageHtml.triggerAndWait({ url });
+    const getHTMLResult = await getPageHtml.triggerAndWait({
+      url,
+      options: {
+        stealth: payload.options?.stealth,
+      },
+    });
 
     if (!getHTMLResult.ok) {
       throw new Error(String(getHTMLResult.error));
