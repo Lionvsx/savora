@@ -1,5 +1,5 @@
 import { getPageHtml } from "@/trigger/ai-scraping/get-page-html";
-import { logger, task } from "@trigger.dev/sdk/v3";
+import { logger, metadata, task } from "@trigger.dev/sdk/v3";
 import { extractionJob } from "./ai-scraping/extract-data-html";
 
 interface ScrapeUrlPayload {
@@ -23,6 +23,10 @@ export const scrapeUrl = task({
     const { url, pattern } = payload;
 
     logger.info(`Scraping URL: ${url}`);
+    metadata.append("logs", {
+      type: "info",
+      message: `Scraping URL: ${url}`,
+    });
     const getHTMLResult = await getPageHtml.triggerAndWait({ url });
 
     if (!getHTMLResult.ok) {

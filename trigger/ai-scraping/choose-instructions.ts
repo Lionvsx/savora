@@ -4,7 +4,7 @@ import {
   saveInstructions,
 } from "@/functions/ai-scraping/instructions/database";
 import { DatabaseInstruction } from "@/types/ai-scraping";
-import { logger, task } from "@trigger.dev/sdk/v3";
+import { logger, metadata, task } from "@trigger.dev/sdk/v3";
 
 interface ChooseInstructionsPayload {
   pattern: string;
@@ -27,10 +27,18 @@ export const chooseInstructions = task({
 
     if (databaseInstructions) {
       logger.info(`Instructions found, using them`, { databaseInstructions });
+      metadata.root.append("logs", {
+        type: "info",
+        message: `Instructions found, using them`,
+      });
     }
 
     if (!databaseInstructions) {
       logger.info(`No instructions found, creating new ones`);
+      metadata.root.append("logs", {
+        type: "info",
+        message: `No instructions found, creating new ones`,
+      });
 
       const newInstructions = await createScrapingPattern({
         html,

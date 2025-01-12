@@ -1,6 +1,6 @@
 import { AIScraper } from "@/services/ai-scraper";
 import { DatabaseInstruction } from "@/types/ai-scraping";
-import { logger, retry } from "@trigger.dev/sdk/v3";
+import { logger, metadata, retry } from "@trigger.dev/sdk/v3";
 import { executeValidationStep } from "./execute-validation-step";
 import {
   cacheHTML,
@@ -29,11 +29,25 @@ export async function extractDataFromHtml(payload: ExtractDataFromHtmlPayload) {
     maxAIScraperAttempts = DEFAULT_MAX_ATTEMPTS,
   } = payload;
   let success = false;
+  metadata.root.append("logs", {
+    type: "info",
+    message: `Starting extraction of data from HTML`,
+  });
   scraper.scrapeWithPattern(html);
 
   await retry.onThrow(
     async ({ attempt, maxAttempts }) => {
+      metadata.root.append("logs", {
+        type: "info",
+        message: `Executing validation step with Claude 3.5 Haiku`,
+      });
       const validation = await scraper.evaluateScrapingResult();
+
+      metadata.root.append("logs", {
+        type: "info",
+        message: `Validation result severity: ${validation.severity}`,
+        data: validation,
+      });
 
       logger.info(`Validation result severity: ${validation.severity}`, {
         validation,
@@ -60,8 +74,18 @@ export async function extractDataFromHtml(payload: ExtractDataFromHtmlPayload) {
           logger.info("Caching HTML");
           await cacheHTML(lastSavedInstructions.url, html);
         }
+        metadata.root.append("logs", {
+          type: "success",
+          message: `Successfully extracted data from HTML`,
+          data: scraper.serializeResults(),
+        });
+
         success = true;
       } else {
+        metadata.root.append("logs", {
+          type: "error",
+          message: `Attempt ${attempt}/${maxAttempts} failed to extract data from HTML : result did not meet validation criteria`,
+        });
         throw new Error(
           `Attempt ${attempt}/${maxAttempts} failed to extract data from HTML`
         );

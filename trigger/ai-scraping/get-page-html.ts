@@ -3,7 +3,7 @@ import { cleanupHtml } from "@/functions/ai-scraping/cleanup-html";
 import { getCachedHTML } from "@/functions/ai-scraping/instructions/database";
 import { createBrowserSession } from "@/functions/browser/create-session";
 import { simulateHumanScrolling } from "@/functions/browser/simulate-human-behavior";
-import { logger, task } from "@trigger.dev/sdk/v3";
+import { logger, metadata, task } from "@trigger.dev/sdk/v3";
 import puppeteer from "puppeteer";
 
 interface GetPageHtmlPayload {
@@ -28,8 +28,17 @@ export const getPageHtml = task({
     const cachedHTML = await getCachedHTML(url);
 
     if (cachedHTML) {
+      metadata.root.append("logs", {
+        type: "info",
+        message: "Found cached HTML, skipping browser session",
+      });
       return cachedHTML;
     }
+
+    metadata.root.append("logs", {
+      type: "info",
+      message: "Creating browserbase session with french proxy",
+    });
 
     const session = await createBrowserSession({
       geolocation: {
@@ -46,6 +55,10 @@ export const getPageHtml = task({
       const page = await browser.newPage();
 
       logger.info(`Navigating to URL: ${url}`);
+      metadata.root.append("logs", {
+        type: "info",
+        message: `Navigating to URL: ${url}`,
+      });
 
       await page.goto(url, { timeout: 120000 });
 
@@ -66,6 +79,10 @@ export const getPageHtml = task({
       const blockCheck = await checkForBlocking(page);
 
       if (blockCheck.isBlocked) {
+        metadata.root.append("logs", {
+          type: "error",
+          message: `Page access blocked: ${blockCheck.type} - ${blockCheck.message}`,
+        });
         throw new Error(
           `Page access blocked: ${blockCheck.type} - ${blockCheck.message}`
         );
@@ -75,13 +92,28 @@ export const getPageHtml = task({
 
       if (options?.stealth || !options?.fast) {
         await simulateHumanScrolling(page);
+
+        metadata.root.append("logs", {
+          type: "info",
+          message: `Scrolling on the page to make it look more human`,
+        });
       }
 
       // Clean up the page content
       const pageContent = await page.content();
       const cleanedHtml = cleanupHtml(pageContent);
 
+      metadata.root.append("logs", {
+        type: "info",
+        message: `Cleaning up the page content`,
+      });
+
       await browser.close();
+
+      metadata.root.append("logs", {
+        type: "info",
+        message: `Closing browser session`,
+      });
 
       return cleanedHtml;
     } catch (error) {

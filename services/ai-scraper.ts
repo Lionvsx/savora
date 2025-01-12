@@ -146,6 +146,13 @@ export class AIScraper {
     return val;
   }
 
+  public serializeResults() {
+    const serializedResult = JSON.stringify(this.result);
+    return {
+      serializedResult,
+    };
+  }
+
   public async evaluateScrapingResult() {
     return validateStructure({
       scrapedData: this.result,
