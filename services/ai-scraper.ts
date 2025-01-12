@@ -147,7 +147,7 @@ export class AIScraper {
   }
 
   public serializeResults() {
-    const serializedResult = JSON.stringify(this.result);
+    const serializedResult = JSON.stringify(this.result, null, 2);
     return {
       serializedResult,
     };
