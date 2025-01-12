@@ -79,6 +79,7 @@ Remember: Your recommendations must be grounded in the real restaurant data prov
             content: userQuery,
           },
         ],
+        abortSignal: req.signal,
         toolChoice: "required",
         experimental_toolCallStreaming: true,
         tools: {

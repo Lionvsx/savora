@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/tooltip";
 
 export default function Home() {
-  const { input, handleInputChange, handleSubmit, messages, setMessages, isLoading, setInput, error } = useChat();
+  const { input, handleInputChange, handleSubmit, messages, setMessages, isLoading, setInput, error, stop } = useChat();
 
   const handleSubmitMessage = (event: React.FormEvent<HTMLFormElement>) => {
     if (messages.length > 1 && input.length > 0) {
@@ -29,6 +29,7 @@ export default function Home() {
   console.log(messages);
 
   const handleReset = () => {
+    stop();
     setMessages([]);
     setInput("");
   }
