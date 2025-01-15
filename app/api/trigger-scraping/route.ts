@@ -7,7 +7,7 @@ import { Restaurant } from "@/types/restaurant";
 import { BatchItem } from "@trigger.dev/sdk/v3";
 import { NextRequest, NextResponse } from "next/server";
 
-const SCRAPING_PASSWORD = "176473";
+const SCRAPING_PASSWORD = process.env.SCRAPING_PASSWORD;
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
